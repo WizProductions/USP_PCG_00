@@ -2,21 +2,24 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Room = UnityEngine.RectInt;
 
-namespace Components.ProceduralGeneration.SimpleRoomPlacement
+namespace Components.ProceduralGeneration.BSP2
 {
-    [CreateAssetMenu(menuName = "Procedural Generation Method/BSP")]
+    [CreateAssetMenu(menuName = "Procedural Generation Method/BSP2")]
     public class BSP2 : ProceduralGenerationMethod
     {
         [Header("Room Parameters")]
-        [SerializeField] private int LeafCutCount = 3;
-        [SerializeField] public bool bDebugLeaf = false;
         [SerializeField] public Vector2Int minRoomSize = new Vector2Int(3, 3);
         [SerializeField] public Vector2Int maxRoomSize = new Vector2Int(5, 5);
+        [SerializeField] public Vector2 SplitRatio = new(0.3f, 0.7f);
         [SerializeField] public int SplitAttempts = 5;
+        [SerializeField] public int MaxLastDepth = 7;
+        
+        [Header("Debug")]
+        [SerializeField] public bool bDebugLeaf = false;
+        [SerializeField] private bool bDebugDrawGrid = false;
+        [SerializeField] public List<BSP_Node2> Tree = new();
 
-        public static List<GameObject> _debugObjects = new List<GameObject>();
         public static BSP2 Instance = null;
 
         public BSP2()
@@ -36,6 +39,8 @@ namespace Components.ProceduralGeneration.SimpleRoomPlacement
 
         protected override async UniTask ApplyGeneration(CancellationToken cancellationToken)
         {
+            if (bDebugDrawGrid) DebugDrawGrid();
+            
             RectInt GridArea = new RectInt(
                 (int)Grid.OriginPosition.x,
                 (int)Grid.OriginPosition.z,
@@ -43,21 +48,45 @@ namespace Components.ProceduralGeneration.SimpleRoomPlacement
                 Grid.Lenght);
             
             var RootNode = new BSP_Node2(GridArea);
+            await RootNode.Split(0);
             
             // Final ground building.
             BuildGround();
         }
 
-        private void DebugDrawRect(RectInt area, Color color, float duration)
+        public void DebugDrawRect(RectInt area, Color color, float duration, float yLevel = 0)
         {
-            Vector3 p1 = new Vector3(area.xMin, 0, area.yMin);
-            Vector3 p2 = new Vector3(area.xMax, 0, area.yMin);
-            Vector3 p3 = new Vector3(area.xMax, 0, area.yMax);
-            Vector3 p4 = new Vector3(area.xMin, 0, area.yMax);
+            if (!bDebugLeaf) return;
+            
+            Vector3 p1 = new Vector3(area.xMin, yLevel, area.yMin);
+            Vector3 p2 = new Vector3(area.xMax, yLevel, area.yMin);
+            Vector3 p3 = new Vector3(area.xMax, yLevel, area.yMax);
+            Vector3 p4 = new Vector3(area.xMin, yLevel, area.yMax);
             Debug.DrawLine(p1, p2, color, duration);
             Debug.DrawLine(p2, p3, color, duration);
             Debug.DrawLine(p3, p4, color, duration);
             Debug.DrawLine(p4, p1, color, duration);
+        }
+
+        private void DebugDrawGrid()
+        {
+            float yLevel = -1;
+            Color color = new(.15f, .15f, .15f, .5f);
+            float duration = 999999f;
+            
+            for (int x = 0; x <= Grid.Width; ++x)
+            {
+                Vector3 start = new Vector3(x + Grid.OriginPosition.x, yLevel, Grid.OriginPosition.z);
+                Vector3 end = new Vector3(x + Grid.OriginPosition.x, yLevel, Grid.Lenght + Grid.OriginPosition.z);
+                Debug.DrawLine(start, end, color, duration);
+            }
+            
+            for (int y = 0; y <= Grid.Lenght; ++y)
+            {
+                Vector3 start = new Vector3(Grid.OriginPosition.x, yLevel, y + Grid.OriginPosition.z);
+                Vector3 end = new Vector3(Grid.Width + Grid.OriginPosition.x, yLevel, y + Grid.OriginPosition.z);
+                Debug.DrawLine(start, end, color, duration);
+            }
         }
 
         // -------------------------------------- CORRIDOR --------------------------------------------- 

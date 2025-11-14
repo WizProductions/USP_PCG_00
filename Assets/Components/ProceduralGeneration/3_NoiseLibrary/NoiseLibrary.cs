@@ -12,12 +12,11 @@ namespace Components.ProceduralGeneration.NoiseLibrary
     [Serializable]
     struct TileNoise
     {
-        public TileNoise(float InNoiseDensity, ETileType inETileType)
+        public TileNoise(float InNoiseDensity, ETileType inETileType) 
         {
             NoiseDensity = InNoiseDensity;
             TileType = inETileType;
         }
-        
         [SerializeField] [Range(0f, 1f)] public float NoiseDensity;
         public ETileType TileType;
     }
@@ -25,15 +24,31 @@ namespace Components.ProceduralGeneration.NoiseLibrary
     [CreateAssetMenu(menuName = "Procedural Generation Method/NoiseLibraryTest")]
     public class NoiseLibrary : ProceduralGenerationMethod
     {
-        [FormerlySerializedAs("TileNoiseArray")]
-        [Header("Parameters")]
+        [Header("Noise List")]
         [SerializeField] private List<TileNoise> TileNoiseList = new List<TileNoise>()
         {
             new(0f, ETileType.Water),
-            new(0.25f, ETileType.Sand),
+            new(0.15f, ETileType.Sand),
+            new(0.25f, ETileType.Dirt),
             new(0.45f, ETileType.Grass),
-            new(0.9f, ETileType.Rock)
+            new(0.85f, ETileType.Rock)
         };
+        
+        [Header("Noise Parameters")]
+        [SerializeField] private FastNoiseLite.NoiseType _NoiseType = FastNoiseLite.NoiseType.OpenSimplex2;
+        [SerializeField] private float _Frequency = 0.015f;
+        [SerializeField] private FastNoiseLite.FractalType _FractalType = FastNoiseLite.FractalType.None;
+        [SerializeField] private int _FractalOctaves = 0;
+        [SerializeField] private float _FractalLacunarity = 0;
+        [SerializeField] private float _FractalGain = 0f;
+        [SerializeField] private float _FractalWeightedStrength = 0f;
+        [SerializeField] private float _FractalPingPongStrength = 0f;
+        [SerializeField] private FastNoiseLite.CellularDistanceFunction _CellularDistanceFunction = FastNoiseLite.CellularDistanceFunction.Euclidean;
+        [SerializeField] private FastNoiseLite.CellularReturnType _CellularReturnType = FastNoiseLite.CellularReturnType.CellValue;
+        [SerializeField] private float _CellularJitter = 1f;
+        [SerializeField] private FastNoiseLite.DomainWarpType _DomainWarpType = FastNoiseLite.DomainWarpType.None;
+        [SerializeField] private float _DomainWarpAmp = 0f;
+        [SerializeField] private FastNoiseLite.RotationType3D _RotationType3D = FastNoiseLite.RotationType3D.None;
         
         [DoNotSerialize] float[,] NoiseGrid;
         
@@ -44,19 +59,21 @@ namespace Components.ProceduralGeneration.NoiseLibrary
             //Step 1 -> Noise configuration
             FastNoiseLite FNL = new();
             FNL.SetSeed(RandomService.Seed);
-            FNL.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
-            FNL.SetFrequency(0.01f);
-            FNL.SetFractalType(FastNoiseLite.FractalType.PingPong);
-            FNL.SetFractalOctaves(5);
-            FNL.SetFractalLacunarity(2);
-            FNL.SetFractalGain(0.65f);
-            FNL.SetFractalWeightedStrength(-0.29f);
-            FNL.SetFractalPingPongStrength(2.37f);
-            FNL.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.Hybrid);
-            FNL.SetCellularReturnType(FastNoiseLite.CellularReturnType.CellValue);
-            FNL.SetCellularJitter(1.5f);
-            FNL.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2Reduced);
-            FNL.SetDomainWarpAmp(34f);
+            FNL.SetNoiseType(_NoiseType);
+            FNL.SetFrequency(_Frequency);
+            FNL.SetFractalType(_FractalType);
+            FNL.SetFractalOctaves(_FractalOctaves);
+            FNL.SetFractalLacunarity(_FractalLacunarity);
+            FNL.SetFractalGain(_FractalGain);
+            FNL.SetFractalWeightedStrength(_FractalWeightedStrength);
+            FNL.SetFractalPingPongStrength(_FractalPingPongStrength);
+            FNL.SetCellularDistanceFunction(_CellularDistanceFunction);
+            FNL.SetCellularReturnType(_CellularReturnType);
+            FNL.SetCellularJitter(_CellularJitter);
+            FNL.SetDomainWarpType(_DomainWarpType);
+            FNL.SetDomainWarpAmp(_DomainWarpAmp);
+            FNL.SetRotationType3D(_RotationType3D);
+            
 
             //Fill noiseGrid
             for (int x = 0; x < Grid.Lenght; ++x)

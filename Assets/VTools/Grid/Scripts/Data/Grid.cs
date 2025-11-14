@@ -170,13 +170,13 @@ namespace VTools.Grid
                     debugTextArray[x][y] = UtilityMethods.CreateWorldText($"({x},{y})", parent.transform, worldPosition, 16, color, TextAnchor.MiddleCenter);
                     debugTextArray[x][y].transform.rotation = Quaternion.Euler(90, 0, 0);
                     
-                    Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.white, float.PositiveInfinity);
-                    Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.white, float.PositiveInfinity);
+                    Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.gray, float.PositiveInfinity);
+                    Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.gray, float.PositiveInfinity);
                 }
             }
 
-            Debug.DrawLine(GetWorldPosition(0, Lenght), GetWorldPosition(Width, Lenght), Color.white, float.PositiveInfinity);
-            Debug.DrawLine(GetWorldPosition(Width, 0), GetWorldPosition(Width, Lenght), Color.white, float.PositiveInfinity);
+            Debug.DrawLine(GetWorldPosition(0, Lenght), GetWorldPosition(Width, Lenght), Color.gray, float.PositiveInfinity);
+            Debug.DrawLine(GetWorldPosition(Width, 0), GetWorldPosition(Width, Lenght), Color.gray, float.PositiveInfinity);
         }
     }
 }
