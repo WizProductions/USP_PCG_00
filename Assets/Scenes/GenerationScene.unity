@@ -474,13 +474,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cbe3e69ae8e450b821d70157faac84e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Components.ProceduralGeneration.ProceduralGridGenerator
-  _gridXValue: 32
-  _gridYValue: 32
+  _gridXValue: 64
+  _gridYValue: 64
   _cellSize: 1
   _startPosition: {x: 0, y: 0, z: 0}
-  _generationMethod: {fileID: 11400000, guid: 6f24b19039ac77a49a33b0c789a00acd, type: 2}
+  _generationMethod: {fileID: 11400000, guid: 27d0443bae73a4b4382c302ecebace7c, type: 2}
   _drawDebug: 0
-  _seed: 12
+  _seed: 69
   _stepDelay: 50
 --- !u!4 &1698666160
 Transform:

@@ -16,13 +16,13 @@ MonoBehaviour:
   TileNoiseList:
   - NoiseDensity: 0
     TileType: 3
-  - NoiseDensity: 0.35
+  - NoiseDensity: 0.4
     TileType: 5
   - NoiseDensity: 0.45
     TileType: 6
-  - NoiseDensity: 0.7
+  - NoiseDensity: 0.65
     TileType: 2
-  - NoiseDensity: 0.88
+  - NoiseDensity: 0.65
     TileType: 4
   _NoiseType: 3
   _Frequency: 0.035
